@@ -10,63 +10,64 @@ exports.createPanel = function(env){
     layout: ui.Panel.Layout.flow('vertical'),
     style: {  
       position : 'bottom-left',
-      width: '25%'
+      width: '20%'
     }
   });
-  var firstLine = ui.Panel({
+  
+  
+    // first line
+  
+  var queryBlock = ui.Panel({
+    layout: ui.Panel.Layout.flow('vertical')
+  });
+
+  /*
+  queryBlock.add(ui.Label(
+      'High Regeneration Cultivation Risk [%]', 
+      {
+        fontSize: '14px',
+        textAlign: 'left',
+        width: "80%", 
+        position: "top-center"
+      }));
+  */
+
+  env.cultLine = ui.Panel({
     layout: ui.Panel.Layout.flow('horizontal'), 
     style: {
       padding: '0px 0px 0px 0px',
-      margin: '4px 4px 8px 4px'
+      margin: '4px 4px 4px 4px', 
+      width: "80%", 
+      position: "top-center"
     }
   });
+  queryBlock.add(env.cultLine)
   
-    // first line
-  firstLine.add(ui.Label(
-      'Species to query : ', 
-      {
-        fontSize: '12px',
-        textAlign: 'left',
-        width: '40%'  
-      }));
-  firstLine.add(ui.Label(
+  queryBlock.add(ui.Label(
       'Regeneration [count / ha]', 
       {
-        fontSize: '12px',
-        textAlign: 'left',
-        width: '60%'  
+        fontSize: '14px',
+        textAlign: 'left', 
+        width: "80%", 
+        position: "top-center"
       }));
   
-
-  // queryBlock is the big main block above consisting of 2 columns
-  // holding the query selector on the left and the query result section on the right
-  var queryBlock = ui.Panel({
-    layout: ui.Panel.Layout.flow('horizontal')
-  });
-  
-  env.querySelection = ui.Panel({
-    layout: ui.Panel.Layout.flow('vertical'),
-    style: {
-      margin: '4px 4px 16px 4px', 
-      width: '40%'
-          }
-    });
-  buildQuerySelection(env, true);
-  
-  queryBlock.add(env.querySelection);
   
   // the value panel is needed as an extra variable for the map's onClick function to 
   // reference
   env.valuePanel = ui.Panel({
     layout: ui.Panel.Layout.flow('horizontal'), 
     style: {
-      margin: '4px 4px 16px 4px', 
-      stretch: 'horizontal'
+      margin: '4px 4px 4px 4px', 
+      stretch: 'horizontal', 
+      width: "80%", 
+      position: "top-center"
     }  
   });
   env.valuePanel.add(ui.Label("Click on map to show values"), 
   { position: "center-left"});
 
+  
   queryBlock.add(env.valuePanel);
   
   
@@ -117,13 +118,12 @@ exports.createPanel = function(env){
   layerBlock.add(env.legend);
   
   // assemble the big block
-  panel.add(firstLine);
   panel.add(queryBlock);
   panel.add(layerBlock);
   
   // the copyright info below
   panel.add(ui.Label({
-    value: "©L. Gass & L. Hülsmann (2024); in prep. \n https://www.easi.uni-bayreuth.de/en/",
+    value: "©L. Gass & L. Hülsmann (2024); in prep. \n https://www.easi.uni-bayreuth.de/en/ \n Version Nov 24",
     style : {
       whiteSpace : 'pre'
     }
@@ -132,50 +132,11 @@ exports.createPanel = function(env){
 }
 
 
-function buildQuerySelection(env, outerChecked){
-  
-  env.querySelection.clear();
-
-  // checking function know env.data_to_query 
-  var checkingFunction =  function(checked, box){
-      env.data_to_query[box.getLabel()] = checked; 
-      };
-      
-  for (var lay in env.data_to_query){
-    env.querySelection.add(
-      ui.Checkbox(lay, outerChecked, checkingFunction, false, 
-      {
-        fontSize: '12px',
-        textAlign: 'left',
-        padding: '0px 0px 0px 0px',
-        margin: '0px 0px 0px 0px'
-      }));
-    }
-  // a select/deselect all
-  // assumes index of self is 23 (24th elemnt in the list)
-  env.querySelection.add(
-    ui.Checkbox("all", outerChecked, 
-      function(checked, box){
-          for (var species in env.data_to_query){
-            env.data_to_query[species] = checked;
-          }
-          buildQuerySelection(env, checked);
-              }, 
-      false, 
-      {
-        fontSize: '12px',
-        textAlign: 'left',
-        padding: '0px 0px 0px 0px',
-        margin: '0px 0px 0px 0px'
-      }));
-}
-
-
 // function to create the legend as ui.Label element
 // kind either "reg" then for regeneration maps or "risk" then for risk
 function create_legend(env, kind){
   env.legend.clear();
-  // recreate a simple version of  the color ramp used manually for the legend
+  // recreate a simple version of  the  ramp used manually for the legend
   var sunset = ["#FFEC9DFF", "#F2AF4AFF", "#EB7F54FF", "#C36377FF", "#61599DFF", "#1D457FFF", "#191F40FF", "black"];
   var risk = ["#E5E5E5FF", "#FCFD8FFF","#F3CE65FF","#EB9F3CFF","#9A3F07FF"];
   var palette; 
@@ -260,8 +221,8 @@ function create_legend(env, kind){
         style: {
           fontSize: '14px',
           textAlign: 'left',
-          padding: '0px 0px 4px 0px',
-          margin: '8px 0px'
+          padding: '0px 0px 0px 0px',
+          margin: '4px 0px'
           },
         })
     );
